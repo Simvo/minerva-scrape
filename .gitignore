@@ -1,3 +1,9 @@
+#cloud9
+.c9
+
+#env
+minerva_scrape_env
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
