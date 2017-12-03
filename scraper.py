@@ -4,8 +4,7 @@ import lxml
 import pprint
 import json
 
-r  = requests.get("https://horizon.mcgill.ca/pban1/bwckgens.p_proc_term_date?p_calling_proc=bwckschd.p_disp_dyn_sched&search_mode_in=&p_term=201709")
-soup = BeautifulSoup(r.text, 'lxml')
+
 
 # for link in soup.find_all('a'):
 #     print(link)
@@ -15,16 +14,20 @@ soup = BeautifulSoup(r.text, 'lxml')
 
 # subj_obtions = [elem['value'] for elem in subj_obtions_elems]
 
-data = {}
 
-def scrape_subjects():
+
+def scrape_subjects(term_code):
+    return_data = {}
+    r  = requests.get("https://horizon.mcgill.ca/pban1/bwckgens.p_proc_term_date?p_calling_proc=bwckschd.p_disp_dyn_sched&search_mode_in=&p_term=" + term_code)
+    soup = BeautifulSoup(r.text, 'lxml')
+
     subj_obtions_elems = soup.find(id='subj_id').find_all('option')
     for elem in subj_obtions_elems:
         subj_code = elem['value']
-        data[subj_code] = { 
+        return_data[subj_code] = { 
             'desc': clean_subj_desc(elem.text), 
-            'courses': {} 
         }
+    return return_data
         
 def clean_subj_desc(subj_desc):
     clean = subj_desc.strip('\n');
@@ -32,6 +35,6 @@ def clean_subj_desc(subj_desc):
     clean = clean.strip(' ')
     return clean
  
-scrape_subjects()
-pprint.pprint(data)
+
+pprint.pprint(scrape_subjects("201701"))
 
