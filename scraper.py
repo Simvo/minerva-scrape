@@ -14,6 +14,28 @@ import json
 
 # subj_obtions = [elem['value'] for elem in subj_obtions_elems]
 
+def scrape_term_codes():
+    return_data = {}
+    #term_codes = []    #if a list is needed
+    r  = requests.get("https://horizon.mcgill.ca/pban1/bwckschd.p_disp_dyn_sched")
+    soup = BeautifulSoup(r.text, 'lxml')
+    term_options_elems = soup.find(id='term_input_id').find_all('option')
+    
+    for elem in term_options_elems:
+        if(elem['value'] != ''):
+            term_code = elem['value']
+            #term_codes.append(term_code) #if a list is needed
+            return_data[term_code] = {
+                'desc': clean_term_desc(elem.text)
+            }
+    return return_data
+        
+def clean_term_desc(term_desc):
+    clean = term_desc.strip('\n');
+    return clean
+
+terms_data = scrape_term_codes()
+pprint.pprint(terms_data)
 
 
 def scrape_subjects(term_code):
