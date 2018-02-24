@@ -5,15 +5,6 @@ import pprint
 import json
 
 
-
-# for link in soup.find_all('a'):
-#     print(link)
-    
-# for c in soup.find(id='subj_id').children:
-#     print(c)
-
-# subj_obtions = [elem['value'] for elem in subj_obtions_elems]
-
 def scrape_term_codes():
     return_data = {}
     #term_codes = []    #if a list is needed
@@ -33,9 +24,6 @@ def scrape_term_codes():
 def clean_term_desc(term_desc):
     clean = term_desc.strip('\n');
     return clean
-
-terms_data = scrape_term_codes()
-pprint.pprint(terms_data)
 
 
 def scrape_subjects(term_code):
@@ -58,5 +46,18 @@ def clean_subj_desc(subj_desc):
     return clean
  
 
-pprint.pprint(scrape_subjects("201701"))
+def scrape_crns(term_code, subj_code):
+    return_data = []
+    r  = requests.get("https://horizon.mcgill.ca/pban1/bwckschd.p_get_crse_unsec?display_mode_in=LIST&search_mode_in=&term_in=" + term_code + "&sel_subj=dummy&sel_day=dummy&sel_schd=dummy&sel_insm=dummy&sel_camp=dummy&sel_levl=dummy&sel_sess=dummy&sel_instr=dummy&sel_ptrm=dummy&sel_attr=dummy&sel_subj=" + subj_code + "&sel_crse=&sel_title=&sel_schd=%25&sel_from_cred=&sel_to_cred=&sel_levl=%25&sel_ptrm=%25&sel_instr=%25&sel_attr=%25&begin_hh=0&begin_mi=0&begin_ap=a&end_hh=0&end_mi=0&end_ap=a")
+    soup = BeautifulSoup(r.text, 'lxml')
+    
+    datadisplaytable = soup.find(class_='datadisplaytable')
+    crn_links = datadisplaytable.find_all('a')
+    for crn_link in crn_links :
+        return_data.append(crn_link.text)
+    return return_data
 
+
+# pprint.pprint(scrape_term_codes())
+# pprint.pprint(scrape_subjects("201709"))
+pprint.pprint(scrape_crns("201701", "COMP"))
