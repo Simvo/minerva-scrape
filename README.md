@@ -39,5 +39,5 @@ $ pip freeze > requirements.txt
 
 Run scrape-ctlg.py:
 ```
-$ python scraper.py
+$ python scrape-ctlg.py
 ```
